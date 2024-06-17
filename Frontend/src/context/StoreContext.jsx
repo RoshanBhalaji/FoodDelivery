@@ -1,11 +1,12 @@
 import { createContext, useEffect, useState } from "react";
 import axios from 'axios'; // CHANGED: Added axios import
+dotenv.config();
 
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({});
-    const url = "http://localhost:4000";
+    const url = process.env.REACT_APP_API_URL; 
     const [token, setToken] = useState('');
     const [food_list, setFoodlist] = useState([]); // Correctly initializing food_list state
 
