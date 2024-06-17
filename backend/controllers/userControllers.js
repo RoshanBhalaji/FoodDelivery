@@ -1,6 +1,6 @@
 import { userModel } from "../models/userModel.js";
 import jwt from "jsonwebtoken";
-var bcrypt = require('bcryptjs');
+import bcrypt from "bcryptjs"; // Import bcryptjs
 import validator from "validator";
 import 'dotenv/config';
 
@@ -10,20 +10,19 @@ const createToken = (id) => {
 };
 
 // Login user
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
         const user = await userModel.findOne({ email });
         if (!user) {
-            return res.status(400).json({ success: false, message: "User not found" });
+            return res.status(404).json({ success: false, message: "User not found" });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ success: false, message: "Invalid credentials" });
+            return res.status(401).json({ success: false, message: "Invalid credentials" });
         }
-
 
         const token = createToken(user._id);
         res.status(200).json({ success: true, token });
@@ -34,28 +33,25 @@ const loginUser = async (req, res) => {
 };
 
 // Register user
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
     const { name, password, email } = req.body;
 
     try {
-        const exist = await userModel.findOne({ email });
-
-        if (exist) {
+        const existingUser = await userModel.findOne({ email });
+        if (existingUser) {
             return res.status(400).json({ success: false, message: "User already exists" });
         }
 
         if (!validator.isEmail(email)) {
             return res.status(400).json({ success: false, message: "Please enter a valid email" });
         }
-        if(password.length<8)
-            {
-                return res.status(400).json({ success: false, message: "Enter a Strong Password"})
 
-            }
+        if (password.length < 8) {
+            return res.status(400).json({ success: false, message: "Enter a strong password (min. 8 characters)" });
+        }
 
-        // Hashing password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        // Hashing password using bcryptjs
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = new userModel({
             name,
@@ -72,5 +68,3 @@ const registerUser = async (req, res) => {
         res.status(500).json({ success: false, message: "Something went wrong" });
     }
 };
-
-export { loginUser, registerUser };
