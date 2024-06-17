@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "start:dev": "nodemon server.js",
-    "postinstall": "npm rebuild bcrypt"
+    "postinstall": "echo 'Skipping bcrypt rebuild on postinstall'"
   },
   "author": "Your Name",
   "license": "ISC",
