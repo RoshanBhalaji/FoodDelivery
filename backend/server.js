@@ -13,7 +13,7 @@ const port = process.env.PORT || 4000;
 
 // CORS configuration
 const corsOptions = {
-    origin: 'https://fooddelivery-2epz.onrender.com',
+    origin: 'https://fooddelivery-rtyh.onrender.com',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 };
